@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "dareAPI/app"
 
+func main() {
+	app.Run()
 }
