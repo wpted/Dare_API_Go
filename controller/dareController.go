@@ -16,8 +16,8 @@ type dareList []dare
 
 var MockDareList = dareList{
 	{1, "Yell hello world out loud"},
-	{2, "Sing hello world out loud"},
-	{3, "Dance hello world as if it's the end of the world"},
+	{2, "Sing to someone beside you"},
+	{3, "Dance as if it's the end of the world"},
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
