@@ -23,11 +23,15 @@ func assertStatus(t *testing.T, got, want int) {
 
 // ---------------------- GET ----------------------
 func TestHome(t *testing.T) {
+	// Instead of using the actual handler Home(w, r)
+	// We create a mock server for the test(which handles the Home function)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", Home)
 
 	request, _ := http.NewRequest(http.MethodGet, "/", nil)
 	response := httptest.NewRecorder()
 
-	Home(response, request)
+	mux.ServeHTTP(response, request)
 
 	got := response.Body.String()
 	want := "{\"Message\":\"welcome to drunk dares\"}"
