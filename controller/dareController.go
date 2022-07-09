@@ -2,6 +2,8 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"time"
@@ -38,6 +40,9 @@ func setHTTPResponseHeader(header Header) {
 	header.Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }
 
+// ------------------------------- Get -------------------------------
+
+// Home is a Get handler function being held by the DefaultServerMux
 func Home(w http.ResponseWriter, r *http.Request) {
 	// message is a one-time struct only appears here
 	message := message{"welcome to drunk dares"}
@@ -95,11 +100,83 @@ func (d *dareList) GetAllDare(w http.ResponseWriter, r *http.Request) {
 	w.Write(output)
 }
 
-// should replace the db to the actual database used
+// ------------------------------- Post -------------------------------
+
+// this is only a mocker, should replace the db to the actual database used
 // addToDatabase adds dare to the database
-func addToDatabase(d dare, db dareList) {
-	db = append(db, d)
+func (db *dareList) addToDatabase(d dare) (err error) {
+	for _, dare := range *db {
+		// can't have same id
+		// this should automatically increase with primary key in database
+		if d.Id == dare.Id {
+			err = errors.New("dare with this id already exist")
+			return
+		}
+		// can't have another same dare question
+		if d.DareQuestion == dare.DareQuestion {
+			err = errors.New("same dare question already exist")
+			return
+		}
+	}
+	*db = append(*db, d)
+	err = nil
+	return err
 }
 
+// CreateDare creates a new dare if a dare doesn't exist in the database
+func CreateDare(w http.ResponseWriter, r *http.Request) {
+	var newDare dare
+	// NewDecoder returns a new Decoder(a struct reads and decodes JSON values from an input stream -> io.reader) that reads from r
+	// Decode reads the next JSON-encoded value from its input and stores it in the value pointed to by v.
+	err := json.NewDecoder(r.Body).Decode(&newDare)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	// update request body to database
+	err = MockDareList.addToDatabase(newDare)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	} else {
+		w.WriteHeader(200)
+	}
+
+	// for debug usage
+	fmt.Println(MockDareList)
+
+}
+
+// ------------------------------- Put -------------------------------
+// this is only a mocker, should replace the db to the actual database used
+// updateDatabase update existing dare in the database
+//func (db *dareList) updateDatabase(d dare) (err error) {
+//	for _, dare := range *db {
+//		if d.Id == dare.Id {
+//			dare.DareQuestion = d.DareQuestion
+//			return nil
+//		} else {
+//			err = errors.New("can't find dare id")
+//			return err
+//		}
+//	}
+//	return
+//}
 //
-//func
+//func UpdateDare(w http.ResponseWriter, r *http.Request) {
+//	var newDare dare
+//	err := json.NewDecoder(r.Body).Decode(&newDare)
+//	if err != nil {
+//		http.Error(w, err.Error(), http.StatusBadRequest)
+//	}
+//
+//	err = MockDareList.updateDatabase(newDare)
+//
+//	if err != nil {
+//		http.Error(w, err.Error(), http.StatusBadRequest)
+//	} else {
+//		w.WriteHeader(http.StatusOK)
+//	}
+//
+//	// for debug usage
+//	fmt.Println(MockDareList)
+//}
