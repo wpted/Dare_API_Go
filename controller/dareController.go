@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"dareAPI/model"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,20 +10,12 @@ import (
 	"time"
 )
 
-type message struct {
-	Message string `json:"Message"`
-}
-type dare struct {
-	Id           int    `json:"ID"`
-	DareQuestion string `json:"Dare"`
-}
-
-type dareList []dare
+type dareList []model.Dare
 
 var MockDareList = dareList{
-	{1, "Yell hello world out loud"},
-	{2, "Sing to someone beside you"},
-	{3, "Dance as if it's the end of the world"},
+	{DareQuestion: "Yell hello world out loud"},
+	{DareQuestion: "Sing to someone beside you"},
+	{DareQuestion: "Dance as if it's the end of the world"},
 }
 
 type Header interface {
@@ -45,7 +38,7 @@ func setHTTPResponseHeader(header Header) {
 // Home is a Get handler function being held by the DefaultServerMux
 func Home(w http.ResponseWriter, r *http.Request) {
 	// message is a one-time struct only appears here
-	message := message{"welcome to drunk dares"}
+	message := model.Message{Message: "welcome to drunk dares"}
 
 	// Marshal returns a jsonified message as []byte and an error
 	output, err := json.Marshal(message)
@@ -104,14 +97,8 @@ func (d *dareList) GetAllDare(w http.ResponseWriter, r *http.Request) {
 
 // this is only a mocker, should replace the db to the actual database used
 // addToDatabase adds dare to the database
-func (db *dareList) addToDatabase(d dare) (err error) {
+func (db *dareList) addToDatabase(d model.Dare) (err error) {
 	for _, dare := range *db {
-		// can't have same id
-		// this should automatically increase with primary key in database
-		if d.Id == dare.Id {
-			err = errors.New("dare with this id already exist")
-			return
-		}
 		// can't have another same dare question
 		if d.DareQuestion == dare.DareQuestion {
 			err = errors.New("same dare question already exist")
@@ -125,7 +112,7 @@ func (db *dareList) addToDatabase(d dare) (err error) {
 
 // CreateDare creates a new dare if a dare doesn't exist in the database
 func CreateDare(w http.ResponseWriter, r *http.Request) {
-	var newDare dare
+	var newDare model.Dare
 	// NewDecoder returns a new Decoder(a struct reads and decodes JSON values from an input stream -> io.reader) that reads from r
 	// Decode reads the next JSON-encoded value from its input and stores it in the value pointed to by v.
 	err := json.NewDecoder(r.Body).Decode(&newDare)
