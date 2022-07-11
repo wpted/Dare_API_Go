@@ -61,14 +61,14 @@ func getRandomIndex(d dareList) int {
 }
 
 // getDareByID is a helper to search dare with the given ID
-func getDareByID(db dareList, ID int) string {
-	return db[ID].DareQuestion
+func getDareByID(db dareList, ID int) *model.Dare {
+	return &db[ID]
 }
 
 // GetRandomDare is a dareList method that returns a random jsonified dare
 func (d *dareList) GetRandomDare(w http.ResponseWriter, r *http.Request) {
 
-	randomDare := getDareByID(*d, getRandomIndex(*d))
+	randomDare := *getDareByID(*d, getRandomIndex(*d))
 
 	output, err := json.Marshal(randomDare)
 	if err != nil {
