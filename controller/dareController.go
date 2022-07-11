@@ -62,7 +62,7 @@ func getRandomIndex(d dareList) int {
 
 // getDareByID is a helper to search dare with the given ID
 func getDareByID(db dareList, ID int) string {
-	return db[ID-1].DareQuestion
+	return db[ID].DareQuestion
 }
 
 // GetRandomDare is a dareList method that returns a random jsonified dare
