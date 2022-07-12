@@ -2,7 +2,6 @@ package configs
 
 import (
 	"fmt"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"os"
 )
 
@@ -24,16 +23,16 @@ func (c Config) Dialect() string {
 func (c Config) GetConnectionURI() string {
 	if c.Password == "" {
 		return fmt.Sprintf(
-			"host=%s dbport=%s user=%s dbname=%s sslmode=disable",
+			"host=%s port=%s user=%s dbname=%s sslmode=disable",
 			c.Host, c.Port, c.User, c.Database,
 		)
 	} else {
-		return fmt.Sprintf("host=%s dbport=%s user=%s password=%s dbname=%s sslmode=disable",
-			c.Host, c.Port, c.Password, c.User, c.Database)
+		return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			c.Host, c.Port, c.User, c.Password, c.Database)
 	}
 }
 
-// GetPostgresConfig returns a config type for further use
+// GetPostgresConfig returns a struct config from the .env file
 func GetPostgresConfig() Config {
 	return Config{
 		Host:     os.Getenv("HOST"),
