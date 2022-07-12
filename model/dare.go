@@ -8,5 +8,5 @@ type Message struct {
 type Dare struct {
 	// Model is a struct having default fields where ID is a primary key
 	gorm.Model
-	DareQuestion string `json:"Dare"`
+	DareQuestion string `json:"Dare" gorm:"unique_index;not null"`
 }
