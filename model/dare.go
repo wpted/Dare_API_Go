@@ -1,6 +1,6 @@
 package model
 
-import "gorm.io/gorm"
+import "github.com/jinzhu/gorm"
 
 type Message struct {
 	Message string `json:"Message"`
