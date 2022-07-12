@@ -3,7 +3,6 @@ package controller
 import (
 	"dareAPI/model"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -98,13 +97,13 @@ func (d *dareList) GetAllDare(w http.ResponseWriter, r *http.Request) {
 // this is only a mocker, should replace the db to the actual database used
 // addToDatabase adds dare to the database
 func (db *dareList) addToDatabase(d model.Dare) (err error) {
-	for _, dare := range *db {
-		// can't have another same dare question
-		if d.DareQuestion == dare.DareQuestion {
-			err = errors.New("same dare question already exist")
-			return
-		}
-	}
+	//for _, dare := range *db {
+	//	// can't have another same dare question
+	//	if d.DareQuestion == dare.DareQuestion {
+	//		err = errors.New("same dare question already exist")
+	//		return
+	//	}
+	//}
 	*db = append(*db, d)
 	err = nil
 	return err
