@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type dareList []model.Dare
+type dareList model.DareContainer
 
 var MockDareList = dareList{
 	{DareQuestion: "Yell hello world out loud"},
@@ -65,9 +65,9 @@ func getDareByID(db dareList, ID int) *model.Dare {
 }
 
 // GetRandomDare is a dareList method that returns a random jsonified dare
-func (d *dareList) GetRandomDare(w http.ResponseWriter, r *http.Request) {
+func (db *dareList) GetRandomDare(w http.ResponseWriter, r *http.Request) {
 
-	randomDare := *getDareByID(*d, getRandomIndex(*d))
+	randomDare := *getDareByID(*db, getRandomIndex(*db))
 
 	output, err := json.Marshal(randomDare)
 	if err != nil {
@@ -80,9 +80,9 @@ func (d *dareList) GetRandomDare(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetAllDare is a dareList method that returns all jsonified dares
-func (d *dareList) GetAllDare(w http.ResponseWriter, r *http.Request) {
+func (db *dareList) GetAllDare(w http.ResponseWriter, r *http.Request) {
 
-	output, err := json.Marshal(*d)
+	output, err := json.Marshal(*db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

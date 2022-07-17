@@ -10,3 +10,5 @@ type Dare struct {
 	gorm.Model
 	DareQuestion string `json:"Dare" gorm:"unique_index;not null"`
 }
+
+type DareContainer []Dare
