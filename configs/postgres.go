@@ -16,7 +16,7 @@ type Config struct {
 	Password string `env:"PASSWORD"`
 }
 
-// Dialect returns "postgres"
+// DbDialect returns "postgres"
 func (c Config) DbDialect() string {
 	return c.Dialect
 }
