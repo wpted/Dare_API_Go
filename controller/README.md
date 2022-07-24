@@ -4,9 +4,19 @@
 
 ### EndPoints
 
+
+##### Create
+1.CreateDareHandler("/Dare/{id}")
+
 ##### Get
-    1.Home("/")
-    2.GetRandomDare("/RandomDare")
-    3.GetAllDare("/Dares")
+1.Home("/")
+2.GetDareHandler("/Dare/{id}")
+3.GetAllDare("/Dares")
+
+##### Put
+1.UpdateDareHandler("/Dare/{id}")
+
+##### Delete
+1.DeleteDareHandler("/")
 
 
