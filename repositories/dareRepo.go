@@ -10,14 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-type Repo interface {
-	GetDareByID(id string) (*model.Dare, error)
-	GetAllDares() (model.DareContainer, error)
-	CreateDare(d *model.Dare) error
-	UpdateDare(id, newDareQuestion string) error
-	DeleteDare(id string) error
-}
-
 type DareRepo struct {
 	Ctx        context.Context
 	Client     *mongo.Client
