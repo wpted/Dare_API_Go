@@ -95,7 +95,7 @@ func (r *DareRepo) UpdateDare(id, newDareQuestion string) error {
 	_, err = r.Collection.UpdateOne(
 		r.Ctx,
 		bson.M{"_id": objectID},
-		bson.D{{"$set", bson.D{{"dare", newDareQuestion}}}})
+		bson.D{{"$set", bson.D{{"question", newDareQuestion}}}})
 
 	if err != nil {
 		return err
