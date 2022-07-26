@@ -26,9 +26,10 @@ func init() {
 	// Get URI from .env file
 	config := configs.NewMongoConfig()
 	mongoURI := config.GetMongoURI()
-
+	mongoDatabaseName := "Dare_Mongo"
+	mongoCollectionName := "Dares"
 	// Establishing connection to database
-	CurrentRepo, err = repositories.NewDareRepo(mongoURI)
+	CurrentRepo, err = repositories.NewDareRepo(mongoURI, mongoDatabaseName, mongoCollectionName)
 	if err != nil {
 		log.Fatal(err)
 	}

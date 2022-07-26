@@ -17,7 +17,7 @@ type DareRepo struct {
 }
 
 // NewDareRepo creates a Dare repository connected to the MongoDB
-func NewDareRepo(dbURI string) (*DareRepo, error) {
+func NewDareRepo(dbURI, databaseName, collectionName string) (*DareRepo, error) {
 	var NewDareRepo DareRepo
 	// Create a non-nil empty context, with no deadline and timeout
 	NewDareRepo.Ctx = context.Background()
@@ -29,7 +29,7 @@ func NewDareRepo(dbURI string) (*DareRepo, error) {
 	}
 
 	// collection pool handle
-	NewDareRepo.Collection = NewDareRepo.Client.Database("Dare_Mongo").Collection("Dares")
+	NewDareRepo.Collection = NewDareRepo.Client.Database(databaseName).Collection(collectionName)
 
 	return &NewDareRepo, nil
 }
