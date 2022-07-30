@@ -27,16 +27,19 @@ func init() {
 	// Get URI from .env file
 	config := configs.NewMongoConfig()
 	mongoURI := config.GetMongoURI()
-	mongoDatabaseName := "Dare_Mongo"
-	mongoCollectionName := "Dares"
+	mongoDatabaseName := config.Database
+	mongoCollectionName := config.Collection
+
 	// Establishing connection to database
 	CurrentRepo, err = repositories.NewDareRepo(mongoURI, mongoDatabaseName, mongoCollectionName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Initialize Administrator
+	newAdmin := configs.NewAdmin()
 	handler = controller.DareHandler{DareRepo: CurrentRepo}
-	authHandler = controller.AuthHandler{}
+	authHandler = controller.AuthHandler{Admin: newAdmin}
 }
 
 func Run() {
@@ -50,7 +53,7 @@ func Run() {
 
 	// Group handler func that implements authMiddleware
 	needAuth := router.Group("/")
-	needAuth.Use(controller.AuthMiddleWare())
+	needAuth.Use(controller.RequireLogin(authHandler.GetSecretKey()))
 	{
 		needAuth.POST("/Dare", handler.CreateDareHandler)
 		needAuth.PUT("/Dare/:id", handler.UpdateDareHandler)
