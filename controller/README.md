@@ -20,3 +20,11 @@
 1.DeleteDareHandler("/")
 
 
+
+### Auth
+
+##### Get
+1. SignIn("/SignIn")
+
+
+
