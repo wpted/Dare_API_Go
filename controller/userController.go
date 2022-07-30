@@ -28,6 +28,25 @@ type JWTOutput struct {
 	Expires time.Time
 }
 
+// AuthMiddleWare is a translation middle layer for implementing JWT tokens to endpoints
+func AuthMiddleWare() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tokenString := c.GetHeader("Authorization")
+		claims := &Claims{}
+
+		parsedToken, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(MockSecretKey), nil
+		})
+
+		if err != nil || parsedToken == nil || !parsedToken.Valid {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		c.Next()
+	}
+}
+
 // SignInHandler is a controller for getting the JWT token
 func (a *AuthHandler) SignInHandler(c *gin.Context) {
 	var user model.User
@@ -51,7 +70,7 @@ func (a *AuthHandler) SignInHandler(c *gin.Context) {
 	// expirationTime is 10 minutes after the request
 	var expirationTime = time.Now().Add(10 * time.Minute)
 
-	// create a claims according to the user input
+	// create claims according to the user input
 	claims := Claims{
 		UserName: user.UserName,
 		RegisteredClaims: jwt.RegisteredClaims{
