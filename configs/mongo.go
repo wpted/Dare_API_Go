@@ -5,13 +5,6 @@ import (
 	"os"
 )
 
-// MongoConfig object
-type MongoConfig struct {
-	User     string `env:"USER"`
-	Password string `env:"PASSWORD"`
-	Port     string `env:"PORT"`
-}
-
 // GetMongoURI returns the Mongo connection URI
 func (c *MongoConfig) GetMongoURI() string {
 	return fmt.Sprintf(
@@ -27,5 +20,7 @@ func NewMongoConfig() MongoConfig {
 		os.Getenv("MONGO_USER"),
 		os.Getenv("MONGO_PASSWORD"),
 		os.Getenv("MONGO_PORT"),
+		os.Getenv("MONGO_DATABASE"),
+		os.Getenv("MONGO_COLLECTION"),
 	}
 }
