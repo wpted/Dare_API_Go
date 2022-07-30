@@ -40,18 +40,22 @@ func init() {
 }
 
 func Run() {
-
 	router := gin.Default()
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "welcome to the Dare API"})
 	})
 	// Dare handler
-	router.POST("/Dare", handler.CreateDareHandler)
 	router.GET("/Dare/:id", handler.GetDareHandler)
 	router.GET("/Dares", handler.GetAllDaresHandler)
-	router.PUT("/Dare/:id", handler.UpdateDareHandler)
-	router.DELETE("/Dare/:id", handler.DeleteDareHandler)
 
+	// Group handler func that implements authMiddleware
+	needAuth := router.Group("/")
+	needAuth.Use(controller.AuthMiddleWare())
+	{
+		needAuth.POST("/Dare", handler.CreateDareHandler)
+		needAuth.PUT("/Dare/:id", handler.UpdateDareHandler)
+		needAuth.DELETE("/Dare/:id", handler.DeleteDareHandler)
+	}
 	// User Handler
 	router.GET("/SignIn", authHandler.SignInHandler)
 	router.Run()
