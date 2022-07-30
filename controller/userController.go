@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"dareAPI/configs"
 	"dareAPI/model"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -8,13 +9,9 @@ import (
 	"time"
 )
 
-var MockUser = model.User{
-	UserName: "Admin",
-	Password: "Password",
+type AuthHandler struct {
+	configs.Admin
 }
-var MockSecretKey = "BDABF2B3DF0E000B2C927DCF1E2235320AC3256AB0E97B6CFD390490B43582FA"
-
-type AuthHandler struct{}
 
 // Claims is a set of statement made by the creator to tell info about the subject
 type Claims struct {
@@ -28,14 +25,14 @@ type JWTOutput struct {
 	Expires time.Time
 }
 
-// AuthMiddleWare is a translation middle layer for implementing JWT tokens to endpoints
-func AuthMiddleWare() gin.HandlerFunc {
+// RequireLogin is a translation middle layer for implementing JWT tokens to endpoints
+func RequireLogin(JWTSecret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		claims := &Claims{}
 
 		parsedToken, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(MockSecretKey), nil
+			return []byte(JWTSecret), nil
 		})
 
 		if err != nil || parsedToken == nil || !parsedToken.Valid {
@@ -60,7 +57,7 @@ func (a *AuthHandler) SignInHandler(c *gin.Context) {
 	}
 
 	// verify whether the user input is within the database
-	if user.UserName != MockUser.UserName || user.Password != MockUser.Password {
+	if user.UserName != a.GetAdminName() || user.Password != a.GetAdminPwd() {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "user not authorized",
 		})
@@ -87,7 +84,7 @@ func (a *AuthHandler) SignInHandler(c *gin.Context) {
 	)
 
 	// SignedString is Parsing and Validating the two: the given signature and the signature generated with the secret key
-	tokenString, err := token.SignedString([]byte(MockSecretKey))
+	tokenString, err := token.SignedString([]byte(a.GetSecretKey()))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
