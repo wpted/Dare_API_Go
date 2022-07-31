@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"log"
 )
 
 type DareRepo struct {
@@ -32,6 +33,16 @@ func NewDareRepo(dbURI, databaseName, collectionName string) (*DareRepo, error) 
 	NewDareRepo.Collection = NewDareRepo.Client.Database(databaseName).Collection(collectionName)
 
 	return &NewDareRepo, nil
+}
+
+// IsEmpty check whether the database is empty
+func (r *DareRepo) IsEmpty() bool {
+	dares, err := r.GetAllDares()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return len(dares) == 0
 }
 
 // GetDareByID return a pointer to Dare and an error. If ID not found, return an empty dare.
@@ -75,7 +86,7 @@ func (r *DareRepo) GetAllDares() (model.DareContainer, error) {
 	return dares, nil
 }
 
-// CreateDare inputs the give Dare into the database
+// CreateDare inputs the given Dare into the database
 func (r *DareRepo) CreateDare(d *model.Dare) error {
 	_, err := r.Collection.InsertOne(r.Ctx, d)
 	if err != nil {
