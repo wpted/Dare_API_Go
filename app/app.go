@@ -3,6 +3,7 @@ package app
 import (
 	"dareAPI/configs"
 	"dareAPI/controller"
+	"dareAPI/middlewares"
 	"dareAPI/repositories"
 	"dareAPI/utils"
 	"github.com/gin-gonic/gin"
@@ -53,6 +54,7 @@ func init() {
 
 func Run() {
 	router := gin.Default()
+	router.Use(middlewares.CORSMiddleware())
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "welcome to the Dare API"})
 	})
@@ -63,7 +65,7 @@ func Run() {
 
 	// Group handler func that implements authMiddleware
 	needAuth := router.Group("/")
-	needAuth.Use(controller.RequireLogin(authHandler.GetSecretKey()))
+	needAuth.Use(middlewares.RequireLogin(authHandler.GetSecretKey()))
 	{
 		needAuth.POST("/dare", handler.CreateDareHandler)
 		needAuth.PUT("/dare/:id", handler.UpdateDareHandler)

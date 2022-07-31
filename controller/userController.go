@@ -25,25 +25,6 @@ type JWTOutput struct {
 	Expires time.Time
 }
 
-// RequireLogin is a translation middle layer for implementing JWT tokens to endpoints
-func RequireLogin(JWTSecret string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Authorization")
-		claims := &Claims{}
-
-		parsedToken, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(JWTSecret), nil
-		})
-
-		if err != nil || parsedToken == nil || !parsedToken.Valid {
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
-		c.Next()
-	}
-}
-
 // SignInHandler is a controller for getting the JWT token
 func (a *AuthHandler) SignInHandler(c *gin.Context) {
 	var user model.User
