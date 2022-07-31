@@ -4,6 +4,7 @@ import (
 	"dareAPI/configs"
 	"dareAPI/controller"
 	"dareAPI/repositories"
+	"dareAPI/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv"
@@ -34,6 +35,14 @@ func init() {
 	CurrentRepo, err = repositories.NewDareRepo(mongoURI, mongoDatabaseName, mongoCollectionName)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	// Check database content status
+	if CurrentRepo.IsEmpty() {
+		dares := utils.ReadFromJson("dare.json")
+		for _, dare := range dares {
+			CurrentRepo.CreateDare(&dare)
+		}
 	}
 
 	// Initialize Administrator
