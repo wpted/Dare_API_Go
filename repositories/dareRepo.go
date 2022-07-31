@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"dareAPI/model"
+	"dareAPI/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -84,6 +85,10 @@ func (r *DareRepo) GetAllDares() (model.DareContainer, error) {
 	}
 
 	return dares, nil
+}
+
+func (r *DareRepo) GetRandomDare(dares model.DareContainer) model.Dare {
+	return utils.RandomDare(dares)
 }
 
 // CreateDare inputs the given Dare into the database
