@@ -57,18 +57,19 @@ func Run() {
 		c.JSON(http.StatusOK, gin.H{"message": "welcome to the Dare API"})
 	})
 	// Dare handler
-	router.GET("/Dare/:id", handler.GetDareHandler)
-	router.GET("/Dares", handler.GetAllDaresHandler)
+	router.GET("/dare/:id", handler.GetDareHandler)
+	router.GET("/dares", handler.GetAllDaresHandler)
+	router.GET("/dares/random", handler.GetRandomDareHandler)
 
 	// Group handler func that implements authMiddleware
 	needAuth := router.Group("/")
 	needAuth.Use(controller.RequireLogin(authHandler.GetSecretKey()))
 	{
-		needAuth.POST("/Dare", handler.CreateDareHandler)
-		needAuth.PUT("/Dare/:id", handler.UpdateDareHandler)
-		needAuth.DELETE("/Dare/:id", handler.DeleteDareHandler)
+		needAuth.POST("/dare", handler.CreateDareHandler)
+		needAuth.PUT("/dare/:id", handler.UpdateDareHandler)
+		needAuth.DELETE("/dare/:id", handler.DeleteDareHandler)
 	}
 	// User Handler
-	router.GET("/SignIn", authHandler.SignInHandler)
+	router.GET("/signin", authHandler.SignInHandler)
 	router.Run()
 }
